@@ -22,6 +22,11 @@ class PolygonWorkspace extends HTMLElement {
           pointer-events: none;
           z-index: 1;
         }
+        .scale-svg, .scale-svg text {
+          user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+        }
         .polygons-layer {
           position: absolute;
           left: 0;
@@ -187,10 +192,12 @@ class PolygonWorkspace extends HTMLElement {
 				const polygon = buffer.getPolygonById(id);
 				if (polygon) {
 					const rect = this.workspaceDiv.getBoundingClientRect();
-					const x = e.clientX - rect.left - polygon.w / 2;
-					const y = e.clientY - rect.top - polygon.h / 2;
-					polygon.x = Math.max(0, Math.min(x, rect.width - polygon.w));
-					polygon.y = Math.max(0, Math.min(y, rect.height - polygon.h));
+					const mouseX = e.clientX - rect.left;
+					const mouseY = e.clientY - rect.top;
+					const x = (mouseX - this.offsetX) / this.scale - polygon.w / 2;
+					const y = (mouseY - this.offsetY) / this.scale - polygon.h / 2;
+					polygon.x = x;
+					polygon.y = y;
 					this.polygons.push(polygon);
 					this.renderPolygons();
 					buffer.removePolygonById(id);
@@ -203,6 +210,7 @@ class PolygonWorkspace extends HTMLElement {
 		console.log("dragstart workspace", id);
 		e.dataTransfer.effectAllowed = "move";
 		e.dataTransfer.setData("application/polygon-id", id);
+		this.isPanning = false;
 	}
 
 	handleDragEnd(e) {
@@ -240,6 +248,7 @@ class PolygonWorkspace extends HTMLElement {
 
 	handleMouseDown = (e) => {
 		if (e.button !== 0) return;
+		if (e.target.closest(".draggable-polygon")) return;
 		this.isPanning = true;
 		this.panStart = {
 			x: e.clientX,

@@ -2,10 +2,12 @@
   "name": "webcomp-boilerplate-helloworld",
   "private": true,
   "scripts": {
+    "deploy": "gh-pages -d dist",
     "build": "webpack --config webpack.prod.js",
     "start": "webpack serve --config webpack.dev.js"
   },
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "webpack": "^5.73.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.3"

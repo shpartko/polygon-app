@@ -143,6 +143,9 @@ class PolygonBuffer extends HTMLElement {
 		const { polygon } = event.detail;
 		this.polygons.push(polygon);
 		this.renderPolygons();
+		if (workspace && typeof workspace.resetPan === "function") {
+			workspace.resetPan();
+		}
 	};
 
 	removePolygonById(id) {
@@ -178,6 +181,9 @@ class PolygonBuffer extends HTMLElement {
 					this.renderPolygons();
 					const mouseUpEvent = new MouseEvent("mouseup", { bubbles: true });
 					window.dispatchEvent(mouseUpEvent);
+					if (workspace && typeof workspace.resetPan === "function") {
+						workspace.resetPan();
+					}
 				}
 			}
 		}
